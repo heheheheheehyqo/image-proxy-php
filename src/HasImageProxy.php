@@ -10,5 +10,5 @@ interface HasImageProxy
 
     public function getImageProxy(): ?Image;
 
-    public function getImageDimensions(): ?Dimensions;
+    public function getImageDimensions(): Dimensions;
 }
