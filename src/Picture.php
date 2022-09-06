@@ -40,7 +40,7 @@ class Picture
 
     public function highPriority(): self
     {
-        $this->attributes['fetchpriority'] = 'hight';
+        $this->attributes['fetchpriority'] = 'high';
 
         return $this;
     }
