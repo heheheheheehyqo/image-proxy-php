@@ -16,7 +16,7 @@ class Image implements \JsonSerializable
 
     public $dimensions;
 
-    public function __construct(array $data, ?Dimensions $dimensions)
+    public function __construct(array $data, ?Dimensions $dimensions = null)
     {
         $this->origin = $data['origin'] ?? null;
         $this->namespace = $data['namespace'] ?? null;
