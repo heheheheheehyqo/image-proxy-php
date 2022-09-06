@@ -142,7 +142,10 @@ class Picture
             $sizes[] = sprintf('%dpx', $this->width);
 
             if (null === $format) {
-                $html .= '<img src="' . $srcset[0] . '" srcset="' . implode(', ', $srcset) . '" sizes="' . implode(', ', $sizes) . '"';
+                $html .= '<img src="' . explode(' ', $srcset[0])[0] . '" srcset="' . implode(', ', $srcset) . '" sizes="' . implode(
+                        ', ',
+                        $sizes
+                    ) . '"';
 
                 if ($height) {
                     $html .= ' height="' . $height . '"';
@@ -169,7 +172,7 @@ class Picture
             }
 
             if (null === $format) {
-                $html .= '<img src="' . $srcset[0] . '" srcset="' . implode(', ', $srcset) . '"';
+                $html .= '<img src="' . explode(' ', $srcset[0])[0] . '" srcset="' . implode(', ', $srcset) . '"';
 
                 if ($this->height) {
                     $html .= ' height="' . $this->height . '"';
