@@ -7,4 +7,6 @@ interface HasImageProxy
     public function getNamespace(): string;
 
     public function getReferenceId(): ?string;
+
+    public function getImageProxy(): ?Image;
 }
