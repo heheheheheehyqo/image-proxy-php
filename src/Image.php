@@ -14,13 +14,16 @@ class Image implements \JsonSerializable
 
     public $blur;
 
-    public function __construct(array $data)
+    public $dimensions;
+
+    public function __construct(array $data, ?Dimensions $dimensions)
     {
         $this->origin = $data['origin'] ?? null;
         $this->namespace = $data['namespace'] ?? null;
         $this->id = $data['id'] ?? null;
         $this->alpha = $data['alpha'] ?? false;
         $this->blur = $data['blur'] ?? null;
+        $this->dimensions = $dimensions;
     }
 
     public function getUrl(?int $width = null, ?int $height = null, ?int $scale = null, ?Format $format = null): string

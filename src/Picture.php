@@ -5,8 +5,8 @@ namespace Hyqo\ImageProxy;
 class Picture
 {
     protected $image;
-    protected $width;
-    protected $height;
+    protected $width = null;
+    protected $height = null;
 
     protected $breakpoints = [];
 
@@ -15,8 +15,14 @@ class Picture
     public function __construct(Image $image, ?int $width = null, ?int $height = null)
     {
         $this->image = $image;
-        $this->width = $width;
-        $this->height = $height;
+
+        if ($width || $height) {
+            $this->width = $width;
+            $this->height = $height;
+        } elseif ($image->dimensions) {
+            $this->width = $image->dimensions->width;
+            $this->height = $image->dimensions->height;
+        }
     }
 
     public function __toString()
@@ -48,7 +54,7 @@ class Picture
     public function blur(): self
     {
         $this->attributes['style'] =
-            'background: url(data:image/jpeg;base64,'.$this->image->blur.') center; background-size: cover';
+            'background: url(data:image/jpeg;base64,' . $this->image->blur . ') center; background-size: cover';
 
         return $this;
     }
