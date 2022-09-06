@@ -153,7 +153,7 @@ class Picture
 
                 $html .= $this->renderAttributes() . '>';
             } else {
-                $html .= '<source srcset="' . implode(', ', $srcset) . '" sizes="' . implode(', ', $sizes) . '">';
+                $html .= '<source type="image/'.$format->value.'" srcset="' . implode(', ', $srcset) . '" sizes="' . implode(', ', $sizes) . '">';
             }
         }
 
