@@ -9,4 +9,6 @@ interface HasImageProxy
     public function getReferenceId(): ?string;
 
     public function getImageProxy(): ?Image;
+
+    public function getImageDimensions(): ?array;
 }
