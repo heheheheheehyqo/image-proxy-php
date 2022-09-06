@@ -45,6 +45,14 @@ class Picture
         return $this;
     }
 
+    public function blur(): self
+    {
+        $this->attributes['style'] =
+            'background: url(data:image/jpeg;base64,'.$this->image->blur.') center; background-size: cover';
+
+        return $this;
+    }
+
     public function class(string $class): self
     {
         $this->attributes['class'] = $class;
