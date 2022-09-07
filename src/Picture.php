@@ -7,10 +7,13 @@ class Picture
     protected $image;
     protected $width = null;
     protected $height = null;
+    protected $ratio = null;
 
     protected $breakpoints = [];
 
     protected $attributes = [];
+
+    protected $mode;
 
     public function __construct(Image $image, ?int $width = null, ?int $height = null)
     {
@@ -22,6 +25,10 @@ class Picture
         } elseif ($image->dimensions) {
             $this->width = $image->dimensions->width;
             $this->height = $image->dimensions->height;
+        }
+
+        if ($this->width && $this->height) {
+            $this->ratio = $this->width / $this->height;
         }
     }
 
@@ -69,6 +76,15 @@ class Picture
     public function responsive(array $breakpoints = [400 => 400, 700 => 700]): self
     {
         $this->breakpoints = $breakpoints;
+        $this->mode = 'responsive';
+
+        return $this;
+    }
+
+    public function adaptive(array $breakpoints = [400 => 400, 700 => 700]): self
+    {
+        $this->breakpoints = $breakpoints;
+        $this->mode = 'adaptive';
 
         return $this;
     }
@@ -82,7 +98,7 @@ class Picture
         }
 
         foreach ($this->breakpoints as $breakpoint => $width) {
-            if ($this->width > $breakpoint) {
+            if ($this->width > $width) {
                 $result[$breakpoint] = $width;
             }
         }
@@ -119,13 +135,17 @@ class Picture
     {
         $html = '';
 
-        $height = $this->height;
-
         foreach (array_merge(ImageProxy::getAvailableFormats(), [null]) as $format) {
             $srcset = [];
             $sizes = [];
 
             foreach ($breakpoints as $breakpoint => $width) {
+                if ($this->mode === 'adaptive') {
+                    $height = $width / $this->ratio;
+                } else {
+                    $height = $this->height;
+                }
+
                 $srcset[] = $this->image->getUrl($width, $height, 1, $format) . sprintf(' %dw', $width);
                 $srcset[] = $this->image->getUrl($width, $height, 2, $format) . sprintf(' %dw', $width * 2);
 
@@ -142,18 +162,24 @@ class Picture
             $sizes[] = sprintf('%dpx', $this->width);
 
             if (null === $format) {
-                $html .= '<img src="' . explode(' ', $srcset[0])[0] . '" srcset="' . implode(', ', $srcset) . '" sizes="' . implode(
+                $html .= '<img src="' . explode(' ', $srcset[0])[0] . '" srcset="' . implode(
+                        ', ',
+                        $srcset
+                    ) . '" sizes="' . implode(
                         ', ',
                         $sizes
                     ) . '"';
 
-                if ($height) {
-                    $html .= ' height="' . $height . '"';
+                if ($this->height && $this->mode === 'responsive') {
+                    $html .= ' height="' . $this->height . '"';
                 }
 
                 $html .= $this->renderAttributes() . '>';
             } else {
-                $html .= '<source type="image/'.$format->value.'" srcset="' . implode(', ', $srcset) . '" sizes="' . implode(', ', $sizes) . '">';
+                $html .= '<source type="image/' . $format->value . '" srcset="' . implode(
+                        ', ',
+                        $srcset
+                    ) . '" sizes="' . implode(', ', $sizes) . '">';
             }
         }
 
@@ -173,6 +199,10 @@ class Picture
 
             if (null === $format) {
                 $html .= '<img src="' . explode(' ', $srcset[0])[0] . '" srcset="' . implode(', ', $srcset) . '"';
+
+                if ($this->width) {
+                    $html .= ' width="' . $this->width . '"';
+                }
 
                 if ($this->height) {
                     $html .= ' height="' . $this->height . '"';
